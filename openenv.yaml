@@ -1,0 +1,80 @@
+# OpenEnv manifest — AI Career Optimization Environment
+name: ai-career-optimization-env
+version: 1.0.0
+description: >
+  Realistic job preparation loop with skills (budgeted training), projects (time-heavy),
+  experience months, calendar pressure, and deterministic interview outcomes derived from
+  preparation readiness.
+
+runtime:
+  server_module: app:app
+  port: 8000
+
+action_space:
+  type: object
+  required: [action]
+  properties:
+    action:
+      type: string
+      enum: [learn_skill, build_project, gain_experience, apply_job]
+      description: High-level career action.
+    skill:
+      type: string
+      description: Required when action is learn_skill (e.g. python, sql, ml).
+
+observation_space:
+  type: object
+  description: Full career state after reset or step.
+  properties:
+    episode_id: { type: string }
+    task: { type: string, enum: [easy, medium, hard] }
+    skills:
+      type: array
+      items: { type: string }
+    projects: { type: integer }
+    experience: { type: integer, description: Total experience in months }
+    days_left: { type: integer }
+    budget: { type: integer }
+    job:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        company_tier: { type: string }
+        required_skills:
+          type: array
+          items: { type: string }
+        min_experience_months: { type: integer }
+        min_projects: { type: integer }
+        salary_band_low: { type: integer }
+        salary_band_high: { type: integer }
+    step_count: { type: integer }
+    max_steps: { type: integer }
+    initial_days: { type: integer }
+    initial_budget: { type: integer }
+    applied: { type: boolean }
+    apply_success: { type: [boolean, "null"] }
+    readiness_at_apply: { type: [number, "null"] }
+    last_reward: { type: number }
+    last_info: { type: string }
+    done: { type: boolean }
+
+reward:
+  dense:
+    learn_skill: 0.2
+    build_project: 0.2
+    gain_experience: 0.3
+    apply_success: 1.0
+    apply_failure: -0.5
+    time_penalty_per_step: -0.05
+
+endpoints:
+  - POST /reset
+  - POST /step
+  - GET /state
+  - GET /tasks
+  - POST /grader
+  - GET /grader
+  - GET /analysis
+  - GET /baseline
+  - GET /health

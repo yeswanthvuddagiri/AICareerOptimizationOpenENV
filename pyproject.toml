@@ -1,0 +1,22 @@
+[project]
+name = "ai-career-optimization-openenv"
+version = "1.0.0"
+description = "AI Career Optimization Environment"
+authors = [
+    { name="Yeswanth" }
+]
+
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "openai",
+    "httpx",
+    "openenv-core>=0.2.0"
+]
+
+[project.scripts]
+server = "server.app:main"
+
+[tool.openenv]
+entrypoint = "server.app:main"

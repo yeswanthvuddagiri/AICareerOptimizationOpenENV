@@ -245,8 +245,8 @@ def _resolve_action(
     return rule_based_action(state)
 
 
-def _safe_grader(http: httpx.Client, env_url: str) -> Tuple[float, Optional[Dict[str, Any]]]:
-    out = _with_retry("GET /grader", lambda: _http_get_json(http, f"{env_url}/grader"))
+def _safe_grader(http: httpx.Client, env_url: str):
+    out = _with_retry("GET /auto_grader", lambda: _http_get_json(http, f"{env_url}/auto_grader"))
     if out is None:
         return 0.0, None
     score = out.get("score")
